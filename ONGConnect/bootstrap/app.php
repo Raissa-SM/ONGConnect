@@ -12,10 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Não adicionamos EnsureFrontendRequestsAreStateful aqui.
-        // A API usa exclusivamente Bearer tokens (Sanctum),
-        // sem autenticação baseada em cookie/sessão.
-        // Adicionar esse middleware causaria erro 419 (CSRF) no Swagger e Postman.
+        $middleware->alias([
+            'voluntario' => \App\Http\Middleware\EnsureIsVoluntario::class,
+            'ong'        => \App\Http\Middleware\EnsureIsOng::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->shouldRenderJsonWhen(fn ($request, $e) => $request->is('api/*'));

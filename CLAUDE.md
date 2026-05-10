@@ -95,3 +95,43 @@ The project is built in stages. Controllers for future stages return placeholder
 - **Etapa 5** (done): `AvaliacaoController`, `DashboardController`, `AvaliacaoPolicy`, `AvaliacaoResource`, `StoreAvaliacaoRequest`.
 
 Seeders run in dependency order: `CategoriaSeeder` → `ONGSeeder` → `VoluntarioSeeder` → `DemandaSeeder`. Future stages will add `InscricaoSeeder` and `AvaliacaoSeeder`.
+- **Etapa 6** (done): Full Blade frontend. Web controllers in `app/Http/Controllers/Web/`, middleware `EnsureIsVoluntario` / `EnsureIsOng`, Apple-inspired design via Tailwind 4 + Vite.
+
+## Frontend (Blade — Etapa 6)
+
+Run `npm run dev` (or `composer run dev`) so Vite compiles CSS/JS during development. Run `npm run build` once for production.
+
+### Design System
+Apple-inspired: `#F5F5F7` page background, white surface cards, `#0071E3` primary blue, `#1D1D1F` / `#86868B` text, `system-ui` font (renders as SF Pro on Apple devices), pill buttons (`rounded-full`), `rounded-2xl` cards with `shadow-sm`, generous whitespace.
+
+CSS tokens defined in `resources/css/app.css` under `@theme`: `--color-primary`, `--color-page`, `--color-surface`, `--color-ink`, `--color-ink-2`, `--color-border`, `--color-success`, `--color-danger`.
+
+### Auth Strategy
+Web routes use Laravel session auth (`Auth::login()` / `Auth::attempt()`), completely separate from API Sanctum Bearer tokens. The `auth` middleware (session) guards web routes; `auth:sanctum` (Bearer token) guards API routes. No conflict.
+
+### Custom Middleware (registered as aliases in `bootstrap/app.php`)
+- `voluntario` → `App\Http\Middleware\EnsureIsVoluntario`
+- `ong` → `App\Http\Middleware\EnsureIsOng`
+
+### Web Route Groups
+- **Public**: `/`, `/demandas`, `/ongs` + show pages
+- **Guest only**: `/login`, `/registro`
+- **`auth` + `voluntario`**: `/dashboard`, `/perfil`, `/inscricoes`, `/match`
+- **`auth` + `ong`**: `/dashboard/ong`, `/perfil/ong`, `/minhas-demandas/*`
+- **`auth` (both)**: `POST /inscricoes/{id}/avaliar`
+
+### Views Structure
+```
+resources/views/
+├── layouts/app.blade.php       # Master layout (sticky nav, toasts, footer)
+├── home/index.blade.php        # Landing page with live stats
+├── auth/{login,registro}.blade.php
+├── demandas/{index,show,minhas,criar,editar}.blade.php
+├── ongs/{index,show}.blade.php
+├── dashboard/{voluntario,ong}.blade.php
+├── perfil/{voluntario,ong}.blade.php
+├── inscricoes/{minhas,demanda}.blade.php
+└── match/sugestoes.blade.php
+```
+
+Web controllers live in `app/Http/Controllers/Web/` and query models directly — no internal HTTP calls to the API.

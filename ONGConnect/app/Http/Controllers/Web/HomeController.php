@@ -3,38 +3,27 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Models\Demanda;
+use App\Models\ONG;
+use App\Models\Voluntario;
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
     public function index(): View
     {
-        return view('home.index');
-    }
+        $stats = [
+            'voluntarios'     => Voluntario::count(),
+            'ongs'            => ONG::count(),
+            'demandas_abertas'=> Demanda::aberta()->count(),
+        ];
 
-    public function login(): View
-    {
-        return view('auth.login');
-    }
+        $demandasDestaque = Demanda::with(['ong', 'categorias'])
+            ->aberta()
+            ->latest()
+            ->take(6)
+            ->get();
 
-    public function registro(): View
-    {
-        return view('auth.registro');
-    }
-
-    public function logout(): RedirectResponse
-    {
-        return redirect()->route('home');
-    }
-
-    public function dashboardVoluntario(): View
-    {
-        return view('dashboard.voluntario');
-    }
-
-    public function dashboardOng(): View
-    {
-        return view('dashboard.ong');
+        return view('home.index', compact('stats', 'demandasDestaque'));
     }
 }

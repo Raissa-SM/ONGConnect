@@ -2,7 +2,19 @@
   "permissions": {
     "allow": [
       "Bash(php artisan *)",
-      "Bash(Get-ChildItem *)"
+      "Bash(Get-ChildItem *)",
+      "Bash(findstr vite *)",
+      "Bash(php -l app/Http/Controllers/Web/AuthController.php app/Http/Controllers/Web/DashboardController.php app/Http/Controllers/Web/DemandaController.php app/Http/Controllers/Web/InscricaoController.php app/Http/Controllers/Web/MatchController.php app/Http/Controllers/Web/AvaliacaoController.php app/Http/Controllers/Web/PerfilController.php app/Http/Controllers/Web/ONGController.php app/Http/Controllers/Web/HomeController.php)",
+      "Bash(npm run *)",
+      "Bash(npm install *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/demandas)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/login)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/registro)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/ongs)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/dashboard)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/match)",
+      "Bash(curl -s http://localhost:8000)"
     ]
   }
 }
