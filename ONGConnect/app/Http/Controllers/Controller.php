@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controller as BaseController;
 use OpenApi\Attributes as OA;
 
 #[OA\Info(
@@ -29,6 +31,7 @@ use OpenApi\Attributes as OA;
 #[OA\Tag(name: 'Avaliacoes',  description: 'Avaliação mútua após conclusão')]
 #[OA\Tag(name: 'Match',       description: 'Sugestões automáticas por score')]
 #[OA\Tag(name: 'Dashboard',   description: 'Estatísticas e histórico do usuário')]
-abstract class Controller
+abstract class Controller extends BaseController
 {
+    use AuthorizesRequests;
 }

@@ -1,0 +1,12 @@
+Atividades e requisitos:
+- Criar um projeto de WebService REST BackEnd.
+- O BackEnd pode ser desenvolvido em Web API ASP.NET com C# como fizemos, ou pode-se utilizar outra linguagem, desde que seguindo metodologia REST e orientado a objetos.
+- Integrar o projeto com banco de dados.
+- O projeto deve trabalhar com pelo menos 4 entidades.
+- Criar rotina de controllers para disponibilizar os serviços e recursos do WebService.
+- Criar a rotina de persistência com o banco de dados (CRUD).
+- Tema livre.
+- Individual ou em dupla.
+
+Os testes com o Webservice será realizado com a ferramenta swagger, Insomnia, postman ou similar.
+Será avaliado o BackEnd. Não será avaliado FrontEnd, este será um trabalho futuro.

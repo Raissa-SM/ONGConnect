@@ -18,5 +18,5 @@ return Application::configure(basePath: dirname(__DIR__))
         // Adicionar esse middleware causaria erro 419 (CSRF) no Swagger e Postman.
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->shouldRenderJsonWhen(fn ($request, $e) => $request->is('api/*'));
     })->create();

@@ -211,6 +211,1645 @@
                     }
                 ]
             }
+        },
+        "/api/inscricoes/{id}/avaliacoes": {
+            "post": {
+                "tags": [
+                    "Avaliacoes"
+                ],
+                "summary": "Registra uma avaliação mútua após a conclusão da inscrição",
+                "description": "ONG avalia o voluntário (nota 1–5); voluntário avalia a ONG. Cada lado pode avaliar uma única vez por inscrição.",
+                "operationId": "24cf6e4e6fd4ba278ee9412d30015fe5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da inscrição concluída",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nota"
+                                ],
+                                "properties": {
+                                    "nota": {
+                                        "type": "integer",
+                                        "example": 5,
+                                        "maximum": 5,
+                                        "minimum": 1
+                                    },
+                                    "comentario": {
+                                        "type": "string",
+                                        "example": "Excelente voluntário, pontual e dedicado."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Avaliação registrada"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Inscrição não concluída ou sem permissão"
+                    },
+                    "404": {
+                        "description": "Inscrição não encontrada"
+                    },
+                    "422": {
+                        "description": "Avaliação já registrada ou dados inválidos"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/voluntarios/{id}/avaliacoes": {
+            "get": {
+                "tags": [
+                    "Avaliacoes"
+                ],
+                "summary": "Lista as avaliações recebidas por um voluntário (feitas por ONGs)",
+                "operationId": "3b44f5e07c4e5010c0b6730de652456c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista paginada de avaliações"
+                    },
+                    "404": {
+                        "description": "Voluntário não encontrado"
+                    }
+                }
+            }
+        },
+        "/api/ongs/{id}/avaliacoes": {
+            "get": {
+                "tags": [
+                    "Avaliacoes"
+                ],
+                "summary": "Lista as avaliações recebidas por uma ONG (feitas por voluntários)",
+                "operationId": "47db284356bd0e8ee8f7b6d5a5e17cc3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista paginada de avaliações"
+                    },
+                    "404": {
+                        "description": "ONG não encontrada"
+                    }
+                }
+            }
+        },
+        "/api/categorias": {
+            "get": {
+                "tags": [
+                    "Categorias"
+                ],
+                "summary": "Lista todas as categorias disponíveis",
+                "operationId": "684188b8d25abcad5e1c8a786226c02b",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de categorias",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "nome": {
+                                                        "type": "string",
+                                                        "example": "Educação"
+                                                    },
+                                                    "slug": {
+                                                        "type": "string",
+                                                        "example": "educacao"
+                                                    },
+                                                    "descricao": {
+                                                        "type": "string",
+                                                        "example": "Atividades de ensino"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Categorias"
+                ],
+                "summary": "Cria uma nova categoria",
+                "operationId": "240f085d72cd493a2f869e93edc2c132",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nome"
+                                ],
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Educação"
+                                    },
+                                    "descricao": {
+                                        "type": "string",
+                                        "example": "Atividades de ensino e letramento"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Categoria criada com sucesso"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "422": {
+                        "description": "Erros de validação"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/categorias/{id}": {
+            "get": {
+                "tags": [
+                    "Categorias"
+                ],
+                "summary": "Retorna uma categoria pelo ID",
+                "operationId": "0644cd38b2452f7e5c9495574afcba4e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dados da categoria"
+                    },
+                    "404": {
+                        "description": "Categoria não encontrada"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Categorias"
+                ],
+                "summary": "Atualiza uma categoria existente",
+                "operationId": "8124c319ebe2032b571b923486a66a77",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nome"
+                                ],
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Educação"
+                                    },
+                                    "descricao": {
+                                        "type": "string",
+                                        "example": "Atividades de ensino"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Categoria atualizada"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "404": {
+                        "description": "Categoria não encontrada"
+                    },
+                    "422": {
+                        "description": "Erros de validação"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Categorias"
+                ],
+                "summary": "Remove uma categoria",
+                "operationId": "266668bb5896ce68b7848fb39bf8107e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Categoria removida"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "404": {
+                        "description": "Categoria não encontrada"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboard/voluntario": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Resumo e estatísticas do voluntário autenticado",
+                "operationId": "8e8798ab444fc9fc35bac22d87fdcad0",
+                "responses": {
+                    "200": {
+                        "description": "Dados do dashboard"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Apenas voluntários"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboard/ong": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Resumo e estatísticas da ONG autenticada",
+                "operationId": "fa45cbb8e5c892a84fe86693a965c2ae",
+                "responses": {
+                    "200": {
+                        "description": "Dados do dashboard"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Apenas ONGs"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/demandas": {
+            "get": {
+                "tags": [
+                    "Demandas"
+                ],
+                "summary": "Lista demandas abertas com filtros opcionais",
+                "operationId": "1f525a26796eeac694b5b1d66215601e",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Busca por título ou descrição",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "cidade",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Rio do Sul"
+                        }
+                    },
+                    {
+                        "name": "uf",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "SC"
+                        }
+                    },
+                    {
+                        "name": "tipo",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "presencial",
+                                "doacao",
+                                "habilidade"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "categoria_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista paginada de demandas abertas"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Demandas"
+                ],
+                "summary": "Cria uma nova demanda em rascunho (apenas ONGs)",
+                "operationId": "7cf9b23f4f68b43a6b578ac88e499eca",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "titulo",
+                                    "descricao",
+                                    "tipo"
+                                ],
+                                "properties": {
+                                    "titulo": {
+                                        "type": "string",
+                                        "example": "Professores para reforço escolar"
+                                    },
+                                    "descricao": {
+                                        "type": "string",
+                                        "example": "Buscamos voluntários para dar aulas de reforço..."
+                                    },
+                                    "tipo": {
+                                        "type": "string",
+                                        "example": "presencial",
+                                        "enum": [
+                                            "presencial",
+                                            "doacao",
+                                            "habilidade"
+                                        ]
+                                    },
+                                    "data_inicio": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-06-01"
+                                    },
+                                    "data_limite": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-08-01"
+                                    },
+                                    "vagas": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "cidade": {
+                                        "type": "string",
+                                        "example": "Rio do Sul"
+                                    },
+                                    "uf": {
+                                        "type": "string",
+                                        "example": "SC"
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "example": -27.2138
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "example": -49.6438
+                                    },
+                                    "categorias": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            3
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Demanda criada (status: rascunho)"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Apenas ONGs podem criar demandas"
+                    },
+                    "422": {
+                        "description": "Erros de validação"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/demandas/{id}": {
+            "get": {
+                "tags": [
+                    "Demandas"
+                ],
+                "summary": "Retorna os detalhes de uma demanda",
+                "operationId": "d5a1cbf114d77c960fa304c65cde8f83",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dados da demanda"
+                    },
+                    "404": {
+                        "description": "Demanda não encontrada"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Demandas"
+                ],
+                "summary": "Atualiza uma demanda (apenas a ONG dona)",
+                "operationId": "bbbe694091b136fd60d0d593a1cfb54a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "titulo",
+                                    "descricao",
+                                    "tipo"
+                                ],
+                                "properties": {
+                                    "titulo": {
+                                        "type": "string"
+                                    },
+                                    "descricao": {
+                                        "type": "string"
+                                    },
+                                    "tipo": {
+                                        "type": "string",
+                                        "enum": [
+                                            "presencial",
+                                            "doacao",
+                                            "habilidade"
+                                        ]
+                                    },
+                                    "data_inicio": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "data_limite": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "vagas": {
+                                        "type": "integer"
+                                    },
+                                    "cidade": {
+                                        "type": "string"
+                                    },
+                                    "uf": {
+                                        "type": "string"
+                                    },
+                                    "latitude": {
+                                        "type": "number"
+                                    },
+                                    "longitude": {
+                                        "type": "number"
+                                    },
+                                    "categorias": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Demanda atualizada"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Sem permissão"
+                    },
+                    "404": {
+                        "description": "Demanda não encontrada"
+                    },
+                    "422": {
+                        "description": "Erros de validação"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Demandas"
+                ],
+                "summary": "Remove uma demanda (apenas ONG dona, sem inscrições ativas)",
+                "operationId": "57f2c4119c0f00b6a0deea4da01adeb0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Demanda removida"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Sem permissão"
+                    },
+                    "404": {
+                        "description": "Demanda não encontrada"
+                    },
+                    "422": {
+                        "description": "Demanda possui inscrições aceitas ou concluídas"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/demandas/{id}/publicar": {
+            "post": {
+                "tags": [
+                    "Demandas"
+                ],
+                "summary": "Publica uma demanda (rascunho → aberta)",
+                "operationId": "89a200c2aa43b178f4964637561b23ad",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Demanda publicada"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Sem permissão"
+                    },
+                    "404": {
+                        "description": "Demanda não encontrada"
+                    },
+                    "422": {
+                        "description": "Demanda não está em rascunho"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/demandas/{id}/encerrar": {
+            "post": {
+                "tags": [
+                    "Demandas"
+                ],
+                "summary": "Encerra uma demanda (aberta → encerrada)",
+                "operationId": "d15f46bbf2b09aa262ab04598e8a0608",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Demanda encerrada"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Sem permissão"
+                    },
+                    "404": {
+                        "description": "Demanda não encontrada"
+                    },
+                    "422": {
+                        "description": "Demanda não está aberta"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/inscricoes/minhas": {
+            "get": {
+                "tags": [
+                    "Inscricoes"
+                ],
+                "summary": "Lista as inscrições do voluntário autenticado",
+                "operationId": "8258352c36650297b788595588652f0c",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista paginada de inscrições"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Apenas voluntários têm inscrições"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/demandas/{id}/inscricoes": {
+            "get": {
+                "tags": [
+                    "Inscricoes"
+                ],
+                "summary": "Lista as inscrições de uma demanda (apenas a ONG dona)",
+                "operationId": "dc88610e22d0b3e0a41ac0de41673a03",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista paginada de inscrições"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Sem permissão"
+                    },
+                    "404": {
+                        "description": "Demanda não encontrada"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Inscricoes"
+                ],
+                "summary": "Inscreve o voluntário autenticado em uma demanda",
+                "operationId": "14c1f1782dcc8b8037a530e0fd2922ed",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "mensagem": {
+                                        "type": "string",
+                                        "example": "Tenho disponibilidade nos fins de semana."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Inscrição realizada com sucesso"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Apenas voluntários podem se inscrever"
+                    },
+                    "404": {
+                        "description": "Demanda não encontrada"
+                    },
+                    "422": {
+                        "description": "Demanda fechada, sem vagas ou já inscrito"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/inscricoes/{id}/aceitar": {
+            "post": {
+                "tags": [
+                    "Inscricoes"
+                ],
+                "summary": "Aceita uma inscrição pendente (ONG dona da demanda)",
+                "operationId": "3bd7ac9598425600e5bdae1f9dc43161",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Inscrição aceita"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Sem permissão"
+                    },
+                    "404": {
+                        "description": "Inscrição não encontrada"
+                    },
+                    "422": {
+                        "description": "Inscrição não está pendente"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/inscricoes/{id}/recusar": {
+            "post": {
+                "tags": [
+                    "Inscricoes"
+                ],
+                "summary": "Recusa uma inscrição pendente (ONG dona da demanda)",
+                "operationId": "01713093238a812f98c824d2e85f5387",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Inscrição recusada"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Sem permissão"
+                    },
+                    "404": {
+                        "description": "Inscrição não encontrada"
+                    },
+                    "422": {
+                        "description": "Inscrição não está pendente"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/inscricoes/{id}/concluir": {
+            "post": {
+                "tags": [
+                    "Inscricoes"
+                ],
+                "summary": "Conclui uma inscrição aceita — libera avaliação (ONG dona)",
+                "operationId": "578e71aae706f0a3a4e99062da9c5f89",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Inscrição concluída — avaliação liberada"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Sem permissão"
+                    },
+                    "404": {
+                        "description": "Inscrição não encontrada"
+                    },
+                    "422": {
+                        "description": "Inscrição não está aceita"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/inscricoes/{id}/cancelar": {
+            "post": {
+                "tags": [
+                    "Inscricoes"
+                ],
+                "summary": "Cancela a própria inscrição (voluntário — se pendente ou aceita)",
+                "operationId": "ac5e8b0ad666c6f6a7464055439ca4f2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Inscrição cancelada"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Sem permissão"
+                    },
+                    "404": {
+                        "description": "Inscrição não encontrada"
+                    },
+                    "422": {
+                        "description": "Inscrição não pode ser cancelada neste status"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/match/sugestoes": {
+            "get": {
+                "tags": [
+                    "Match"
+                ],
+                "summary": "Sugere demandas abertas rankeadas por score de match para o voluntário autenticado",
+                "operationId": "b344e7d575544b4e63af121e0054165c",
+                "parameters": [
+                    {
+                        "name": "raio_km",
+                        "in": "query",
+                        "description": "Raio máximo de busca em km (padrão: 50)",
+                        "required": false,
+                        "schema": {
+                            "type": "number",
+                            "example": 50
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista paginada de sugestões ordenadas por score",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "demanda": {
+                                                        "type": "object"
+                                                    },
+                                                    "score": {
+                                                        "properties": {
+                                                            "total": {
+                                                                "type": "number",
+                                                                "example": 0.78
+                                                            },
+                                                            "categoria": {
+                                                                "type": "number",
+                                                                "example": 0.8
+                                                            },
+                                                            "proximidade": {
+                                                                "type": "number",
+                                                                "example": 0.75
+                                                            },
+                                                            "distancia_km": {
+                                                                "type": "number",
+                                                                "example": 12.5
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Apenas voluntários recebem sugestões"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/match/score": {
+            "get": {
+                "tags": [
+                    "Match"
+                ],
+                "summary": "Retorna o score de match entre o voluntário autenticado e uma demanda específica. ONGs veem os scores de todos os seus inscritos.",
+                "operationId": "cd4cdeac31a21327ae5dc0e756437a41",
+                "parameters": [
+                    {
+                        "name": "demanda_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Score detalhado"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Sem permissão"
+                    },
+                    "404": {
+                        "description": "Demanda não encontrada"
+                    },
+                    "422": {
+                        "description": "Parâmetro demanda_id ausente"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/ongs": {
+            "get": {
+                "tags": [
+                    "ONGs"
+                ],
+                "summary": "Lista todas as ONGs cadastradas",
+                "operationId": "fa8cab912982b6960900bc63fb2dfde0",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Busca por nome ou cidade",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Rio do Sul"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de ONGs paginada"
+                    }
+                }
+            }
+        },
+        "/api/ongs/{id}": {
+            "get": {
+                "tags": [
+                    "ONGs"
+                ],
+                "summary": "Retorna o perfil público de uma ONG",
+                "operationId": "d73386e8c0cefa43359fd6ed83796274",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dados da ONG"
+                    },
+                    "404": {
+                        "description": "ONG não encontrada"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "ONGs"
+                ],
+                "summary": "Atualiza o perfil da ONG autenticada",
+                "operationId": "59cf27bac1be97af0d19999ab0364de2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "razao_social"
+                                ],
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Usuário Responsável"
+                                    },
+                                    "razao_social": {
+                                        "type": "string",
+                                        "example": "ONG Mãos Solidárias"
+                                    },
+                                    "cnpj": {
+                                        "type": "string",
+                                        "example": "12345678000195"
+                                    },
+                                    "telefone": {
+                                        "type": "string",
+                                        "example": "(47) 99999-9999"
+                                    },
+                                    "descricao_missao": {
+                                        "type": "string",
+                                        "example": "Apoio a famílias carentes."
+                                    },
+                                    "endereco": {
+                                        "type": "string",
+                                        "example": "Rua das Flores, 100"
+                                    },
+                                    "cidade": {
+                                        "type": "string",
+                                        "example": "Rio do Sul"
+                                    },
+                                    "uf": {
+                                        "type": "string",
+                                        "example": "SC"
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "example": -27.2138
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "example": -49.6438
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Perfil atualizado"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Sem permissão para editar esta ONG"
+                    },
+                    "404": {
+                        "description": "ONG não encontrada"
+                    },
+                    "422": {
+                        "description": "Erros de validação"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/voluntarios/{id}": {
+            "get": {
+                "tags": [
+                    "Voluntarios"
+                ],
+                "summary": "Retorna o perfil público de um voluntário",
+                "operationId": "929264a2d9a170bae06c4b7025ab58a0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dados públicos do voluntário"
+                    },
+                    "404": {
+                        "description": "Voluntário não encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Voluntarios"
+                ],
+                "summary": "Atualiza o perfil do voluntário autenticado",
+                "operationId": "bfaa257e1222cae66910869fe630c8f7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "João da Silva"
+                                    },
+                                    "cpf": {
+                                        "type": "string",
+                                        "example": "12345678901"
+                                    },
+                                    "telefone": {
+                                        "type": "string",
+                                        "example": "(47) 99999-9999"
+                                    },
+                                    "descricao": {
+                                        "type": "string",
+                                        "example": "Desenvolvedor web com experiência em Laravel."
+                                    },
+                                    "habilidades": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": [
+                                            "desenvolvimento web",
+                                            "design gráfico"
+                                        ]
+                                    },
+                                    "disponibilidade": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": [
+                                            "sabado_manha",
+                                            "domingo_tarde"
+                                        ]
+                                    },
+                                    "endereco": {
+                                        "type": "string",
+                                        "example": "Rua das Flores, 100"
+                                    },
+                                    "cidade": {
+                                        "type": "string",
+                                        "example": "Rio do Sul"
+                                    },
+                                    "uf": {
+                                        "type": "string",
+                                        "example": "SC"
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "example": -27.2138
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "example": -49.6438
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Perfil atualizado"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Sem permissão para editar este perfil"
+                    },
+                    "404": {
+                        "description": "Voluntário não encontrado"
+                    },
+                    "422": {
+                        "description": "Erros de validação"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/voluntarios/{id}/categorias": {
+            "post": {
+                "tags": [
+                    "Voluntarios"
+                ],
+                "summary": "Atualiza as categorias de interesse do voluntário (substitui todas)",
+                "operationId": "ea5693f306fdaa08ad163ed3441e793a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "categorias"
+                                ],
+                                "properties": {
+                                    "categorias": {
+                                        "description": "Array de IDs das categorias de interesse",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            3,
+                                            5
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Categorias atualizadas"
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "403": {
+                        "description": "Sem permissão"
+                    },
+                    "422": {
+                        "description": "IDs inválidos"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -229,6 +1868,38 @@
         {
             "name": "Auth",
             "description": "Registro, login e logout"
+        },
+        {
+            "name": "Categorias",
+            "description": "Gerenciamento de categorias"
+        },
+        {
+            "name": "ONGs",
+            "description": "Perfis de ONGs"
+        },
+        {
+            "name": "Voluntarios",
+            "description": "Perfis de voluntários"
+        },
+        {
+            "name": "Demandas",
+            "description": "Publicação e consulta de demandas"
+        },
+        {
+            "name": "Inscricoes",
+            "description": "Inscrição e workflow de participação"
+        },
+        {
+            "name": "Avaliacoes",
+            "description": "Avaliação mútua após conclusão"
+        },
+        {
+            "name": "Match",
+            "description": "Sugestões automáticas por score"
+        },
+        {
+            "name": "Dashboard",
+            "description": "Estatísticas e histórico do usuário"
         }
     ]
 }
