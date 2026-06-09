@@ -54,7 +54,7 @@
                     @endif
                     @if($demanda->data_inicio)
                         <div>
-                            <dt class="text-ink-2">Data de início</dt>
+                            <dt class="text-ink-2">Início das inscrições</dt>
                             <dd class="font-medium text-ink mt-0.5">{{ $demanda->data_inicio->format('d/m/Y') }}</dd>
                         </div>
                     @endif
@@ -72,6 +72,24 @@
                     @endif
                 </dl>
             </div>
+
+            {{-- Mapa de localização --}}
+            @if($demanda->latitude && $demanda->longitude)
+                <div class="bg-surface rounded-2xl border border-border/60 p-6">
+                    <h2 class="font-semibold text-ink mb-4">Localização no mapa</h2>
+                    <x-mapa-visualizacao
+                        :lat="$demanda->latitude"
+                        :lng="$demanda->longitude"
+                        :label="$demanda->endereco ?? ($demanda->cidade ? $demanda->cidade . ($demanda->uf ? ', ' . $demanda->uf : '') : null)"
+                        map-id="mapa-demanda"
+                    />
+                    @if($demanda->endereco || $demanda->cidade)
+                        <p class="text-xs text-ink-2 mt-2">
+                            {{ implode(', ', array_filter([$demanda->endereco, $demanda->cidade, $demanda->uf])) }}
+                        </p>
+                    @endif
+                </div>
+            @endif
 
             {{-- Categorias --}}
             @if($demanda->categorias->count())

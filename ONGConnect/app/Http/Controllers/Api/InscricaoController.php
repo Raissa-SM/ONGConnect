@@ -126,6 +126,7 @@ class InscricaoController extends Controller
         $inscricao = Inscricao::create([
             'voluntario_id' => $voluntario->id,
             'demanda_id'    => $demanda->id,
+            'status'        => StatusInscricao::Pendente,
             'mensagem'      => $request->validated()['mensagem'] ?? null,
         ]);
 

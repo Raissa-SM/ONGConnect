@@ -82,19 +82,12 @@
                         class="w-full rounded-xl border border-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                         placeholder="SC">
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-ink mb-1.5">Latitude</label>
-                    <input type="number" step="any" name="latitude" value="{{ old('latitude', $ong->latitude) }}"
-                        class="w-full rounded-xl border border-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
-                        placeholder="-27.2138">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-ink mb-1.5">Longitude</label>
-                    <input type="number" step="any" name="longitude" value="{{ old('longitude', $ong->longitude) }}"
-                        class="w-full rounded-xl border border-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
-                        placeholder="-49.6438">
-                </div>
             </div>
+            <x-mapa-localizacao
+                :lat="old('latitude', $ong->latitude)"
+                :lng="old('longitude', $ong->longitude)"
+                map-id="mapa-ong"
+            />
         </div>
 
         <div class="flex gap-3">

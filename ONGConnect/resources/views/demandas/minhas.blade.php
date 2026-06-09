@@ -80,11 +80,12 @@
                                         </button>
                                     </form>
                                 @elseif($demanda->status->value === 'aberta')
-                                    <form method="POST" action="{{ route('demandas.encerrar', $demanda->id) }}">
+                                    <form method="POST" action="{{ route('demandas.concluir', $demanda->id) }}"
+                                          onsubmit="return confirm('Concluir a demanda e marcar todas as inscrições aceitas como concluídas? Esta ação não pode ser desfeita.')">
                                         @csrf
                                         <button type="submit"
-                                            class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-700 px-3 py-1.5 rounded-full transition-colors font-medium">
-                                            Encerrar
+                                            class="text-xs bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1.5 rounded-full transition-colors font-medium">
+                                            Concluir demanda
                                         </button>
                                     </form>
                                 @endif

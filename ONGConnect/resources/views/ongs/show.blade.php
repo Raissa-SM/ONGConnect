@@ -40,51 +40,95 @@
         </div>
 
         {{-- Demandas --}}
-        <div class="lg:col-span-2">
-            <h2 class="text-xl font-bold tracking-tight text-ink mb-5">Demandas abertas</h2>
+        <div class="lg:col-span-2 space-y-10">
 
-            @if($ong->demandas->isEmpty())
-                <div class="bg-surface rounded-2xl border border-border/60 p-10 text-center text-ink-2">
-                    <p>Nenhuma demanda aberta no momento.</p>
-                </div>
-            @else
-                <div class="space-y-4">
-                    @foreach($ong->demandas as $demanda)
-                        <a href="{{ route('demandas.show', $demanda->id) }}"
-                           class="bg-surface rounded-2xl border border-border/50 p-6 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 block group">
-                            <div class="flex items-start justify-between gap-4">
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <span class="text-xs font-medium px-2.5 py-1 rounded-full
-                                            @if($demanda->tipo->value === 'presencial') bg-blue-50 text-blue-700
-                                            @elseif($demanda->tipo->value === 'doacao') bg-amber-50 text-amber-700
-                                            @else bg-purple-50 text-purple-700 @endif">
-                                            {{ $demanda->tipo->label() }}
-                                        </span>
+            {{-- Abertas --}}
+            <div>
+                <h2 class="text-xl font-bold tracking-tight text-ink mb-5">Demandas abertas</h2>
+
+                @if($demandasAbertas->isEmpty())
+                    <div class="bg-surface rounded-2xl border border-border/60 p-10 text-center text-ink-2">
+                        <p>Nenhuma demanda aberta no momento.</p>
+                    </div>
+                @else
+                    <div class="space-y-4">
+                        @foreach($demandasAbertas as $demanda)
+                            <a href="{{ route('demandas.show', $demanda->id) }}"
+                               class="bg-surface rounded-2xl border border-border/50 p-6 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 block group">
+                                <div class="flex items-start justify-between gap-4">
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <span class="text-xs font-medium px-2.5 py-1 rounded-full
+                                                @if($demanda->tipo->value === 'presencial') bg-blue-50 text-blue-700
+                                                @elseif($demanda->tipo->value === 'doacao') bg-amber-50 text-amber-700
+                                                @else bg-purple-50 text-purple-700 @endif">
+                                                {{ $demanda->tipo->label() }}
+                                            </span>
+                                        </div>
+                                        <h3 class="font-semibold text-ink group-hover:text-primary transition-colors">{{ $demanda->titulo }}</h3>
+                                        <p class="text-sm text-ink-2 mt-1 line-clamp-2">{{ $demanda->descricao }}</p>
+                                        @if($demanda->categorias->count())
+                                            <div class="flex flex-wrap gap-1.5 mt-3">
+                                                @foreach($demanda->categorias->take(4) as $cat)
+                                                    <span class="text-xs bg-page text-ink-2 px-2 py-0.5 rounded-full">{{ $cat->nome }}</span>
+                                                @endforeach
+                                            </div>
+                                        @endif
                                     </div>
-                                    <h3 class="font-semibold text-ink group-hover:text-primary transition-colors">{{ $demanda->titulo }}</h3>
-                                    <p class="text-sm text-ink-2 mt-1 line-clamp-2">{{ $demanda->descricao }}</p>
-                                    @if($demanda->categorias->count())
-                                        <div class="flex flex-wrap gap-1.5 mt-3">
-                                            @foreach($demanda->categorias->take(4) as $cat)
-                                                <span class="text-xs bg-page text-ink-2 px-2 py-0.5 rounded-full">{{ $cat->nome }}</span>
-                                            @endforeach
+                                    @if($demanda->vagas)
+                                        <div class="text-right shrink-0">
+                                            <p class="text-2xl font-bold text-ink">{{ $demanda->vagasDisponiveis() }}</p>
+                                            <p class="text-xs text-ink-2">vagas</p>
                                         </div>
                                     @endif
                                 </div>
-                                @if($demanda->vagas)
-                                    <div class="text-right shrink-0">
-                                        <p class="text-2xl font-bold text-ink">{{ $demanda->vagasDisponiveis() }}</p>
-                                        <p class="text-xs text-ink-2">vagas</p>
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+
+            {{-- Encerradas --}}
+            @if($demandasEncerradas->isNotEmpty())
+                <div>
+                    <h2 class="text-lg font-semibold text-ink-2 mb-4">Demandas encerradas</h2>
+                    <div class="space-y-3">
+                        @foreach($demandasEncerradas as $demanda)
+                            <a href="{{ route('demandas.show', $demanda->id) }}"
+                               class="bg-surface rounded-2xl border border-border/50 p-5 hover:shadow-sm transition-all duration-200 block group opacity-75 hover:opacity-100">
+                                <div class="flex items-start justify-between gap-4">
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center gap-2 mb-1.5">
+                                            <span class="text-xs font-medium px-2.5 py-1 rounded-full
+                                                @if($demanda->tipo->value === 'presencial') bg-blue-50 text-blue-700
+                                                @elseif($demanda->tipo->value === 'doacao') bg-amber-50 text-amber-700
+                                                @else bg-purple-50 text-purple-700 @endif">
+                                                {{ $demanda->tipo->label() }}
+                                            </span>
+                                            <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-red-50 text-danger">
+                                                Encerrada
+                                            </span>
+                                        </div>
+                                        <h3 class="font-medium text-ink-2 group-hover:text-ink transition-colors">{{ $demanda->titulo }}</h3>
+                                        @if($demanda->categorias->count())
+                                            <div class="flex flex-wrap gap-1.5 mt-2">
+                                                @foreach($demanda->categorias->take(3) as $cat)
+                                                    <span class="text-xs bg-page text-ink-2 px-2 py-0.5 rounded-full">{{ $cat->nome }}</span>
+                                                @endforeach
+                                            </div>
+                                        @endif
                                     </div>
-                                @endif
-                            </div>
-                        </a>
-                    @endforeach
+                                    @if($demanda->data_limite)
+                                        <p class="text-xs text-ink-2 shrink-0">{{ $demanda->data_limite->format('d/m/Y') }}</p>
+                                    @endif
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
             @endif
-        </div>
 
+        </div>
     </div>
 </div>
 

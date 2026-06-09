@@ -21,11 +21,15 @@ class ONGController extends Controller
 
     public function show(int $id): View
     {
-        $ong = ONG::with([
-                'demandas' => fn ($q) => $q->aberta()->with('categorias')->latest(),
-            ])
-            ->findOrFail($id);
+        $ong = ONG::findOrFail($id);
 
-        return view('ongs.show', compact('ong'));
+        $demandasAbertas = $ong->demandas()->aberta()->with('categorias')->latest()->get();
+        $demandasEncerradas = $ong->demandas()
+            ->where('status', 'encerrada')
+            ->with('categorias')
+            ->latest()
+            ->get();
+
+        return view('ongs.show', compact('ong', 'demandasAbertas', 'demandasEncerradas'));
     }
 }

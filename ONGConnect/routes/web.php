@@ -50,7 +50,7 @@ Route::middleware(['auth', 'ong'])->group(function () {
     Route::put('/minhas-demandas/{id}',             [DemandaController::class,   'update'])->name('demandas.update');
     Route::delete('/minhas-demandas/{id}',          [DemandaController::class,   'destroy'])->name('demandas.destroy');
     Route::post('/minhas-demandas/{id}/publicar',   [DemandaController::class,   'publicar'])->name('demandas.publicar');
-    Route::post('/minhas-demandas/{id}/encerrar',   [DemandaController::class,   'encerrar'])->name('demandas.encerrar');
+    Route::post('/minhas-demandas/{id}/concluir',   [DemandaController::class,   'concluirTodas'])->name('demandas.concluir');
     Route::get('/minhas-demandas/{id}/inscricoes',  [InscricaoController::class, 'porDemanda'])->name('inscricoes.demanda');
     Route::post('/inscricoes/{id}/aceitar',         [InscricaoController::class, 'aceitar'])->name('inscricoes.aceitar');
     Route::post('/inscricoes/{id}/recusar',         [InscricaoController::class, 'recusar'])->name('inscricoes.recusar');

@@ -12,6 +12,16 @@ class UpdateONGRequest extends FormRequest
         return true; // Autorização via Policy no controller
     }
 
+    public function prepareForValidation(): void
+    {
+        $strip = fn(?string $v) => $v !== null ? preg_replace('/\D/', '', $v) : null;
+
+        $this->merge([
+            'cnpj'     => $strip($this->cnpj),
+            'telefone' => $strip($this->telefone),
+        ]);
+    }
+
     public function rules(): array
     {
         $id = $this->route('id');

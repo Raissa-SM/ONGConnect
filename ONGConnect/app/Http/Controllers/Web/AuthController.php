@@ -34,8 +34,29 @@ class AuthController extends Controller
         $request->session()->regenerate();
         $user = Auth::user();
 
-        return redirect()
-            ->route($user->isOng() ? 'dashboard.ong' : 'dashboard.voluntario')
+        $defaultRoute = $user->isOng() ? 'dashboard.ong' : 'dashboard.voluntario';
+
+        // Descarta a URL pretendida se for exclusiva do tipo oposto,
+        // evitando redirecionamentos para rotas inacessíveis após o login.
+        $intended = $request->session()->get('url.intended', '');
+        if ($intended) {
+            $ongOnly = ['/dashboard/ong', '/perfil/ong', '/minhas-demandas'];
+            $volOnly = ['/dashboard', '/perfil', '/inscricoes', '/match'];
+
+            $path = parse_url($intended, PHP_URL_PATH) ?? '';
+
+            $isOngUrl = collect($ongOnly)->contains(fn ($p) => str_starts_with($path, $p));
+            $isVolUrl = collect($volOnly)->contains(fn ($p) => str_starts_with($path, $p));
+
+            $wrongType = ($user->isOng() && $isVolUrl && !$isOngUrl)
+                      || ($user->isVoluntario() && $isOngUrl);
+
+            if ($wrongType) {
+                $request->session()->forget('url.intended');
+            }
+        }
+
+        return redirect()->intended(route($defaultRoute))
             ->with('success', 'Bem-vindo de volta, ' . $user->name . '!');
     }
 
@@ -66,9 +87,11 @@ class AuthController extends Controller
             'tipo_perfil' => $validated['tipo_perfil'],
         ]);
 
+        $strip = fn(?string $v) => $v !== null ? preg_replace('/\D/', '', $v) : null;
+
         $campos = [
             'user_id'  => $user->id,
-            'telefone' => $validated['telefone'] ?? null,
+            'telefone' => $strip($validated['telefone'] ?? null),
             'cidade'   => $validated['cidade'] ?? null,
             'uf'       => $validated['uf'] ?? null,
         ];
@@ -76,11 +99,11 @@ class AuthController extends Controller
         if ($user->isOng()) {
             ONG::create(array_merge($campos, [
                 'razao_social' => $validated['razao_social'],
-                'cnpj'         => $validated['cnpj'] ?? null,
+                'cnpj'         => $strip($validated['cnpj'] ?? null),
             ]));
         } else {
             Voluntario::create(array_merge($campos, [
-                'cpf' => $validated['cpf'] ?? null,
+                'cpf' => $strip($validated['cpf'] ?? null),
             ]));
         }
 

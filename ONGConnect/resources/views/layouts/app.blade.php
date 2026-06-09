@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'ONGConnect')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('head')
 </head>
 <body class="bg-page text-ink min-h-screen flex flex-col antialiased">
 
@@ -91,5 +92,6 @@
         </div>
     </footer>
 
+    @stack('scripts')
 </body>
 </html>

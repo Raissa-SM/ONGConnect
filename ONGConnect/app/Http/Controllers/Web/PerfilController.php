@@ -35,11 +35,13 @@ class PerfilController extends Controller
             'categorias.*' => 'exists:categorias,id',
         ]);
 
+        $strip = fn(?string $v) => $v !== null ? preg_replace('/\D/', '', $v) : null;
+
         $request->user()->update(['name' => $validated['name']]);
 
         $voluntario->update([
-            'telefone'  => $validated['telefone'] ?? null,
-            'cpf'       => $validated['cpf'] ?? null,
+            'telefone'  => $strip($validated['telefone'] ?? null),
+            'cpf'       => $strip($validated['cpf'] ?? null),
             'cidade'    => $validated['cidade'] ?? null,
             'uf'        => $validated['uf'] ?? null,
             'descricao' => $validated['descricao'] ?? null,
@@ -76,12 +78,14 @@ class PerfilController extends Controller
             'longitude'        => 'nullable|numeric|between:-180,180',
         ]);
 
+        $strip = fn(?string $v) => $v !== null ? preg_replace('/\D/', '', $v) : null;
+
         $request->user()->update(['name' => $validated['name']]);
 
         $ong->update([
             'razao_social'     => $validated['razao_social'],
-            'cnpj'             => $validated['cnpj'] ?? null,
-            'telefone'         => $validated['telefone'] ?? null,
+            'cnpj'             => $strip($validated['cnpj'] ?? null),
+            'telefone'         => $strip($validated['telefone'] ?? null),
             'cidade'           => $validated['cidade'] ?? null,
             'uf'               => $validated['uf'] ?? null,
             'endereco'         => $validated['endereco'] ?? null,

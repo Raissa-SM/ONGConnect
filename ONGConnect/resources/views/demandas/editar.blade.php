@@ -43,7 +43,7 @@
             <h2 class="font-semibold text-ink">Datas e vagas</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-ink mb-1.5">Data de início</label>
+                    <label class="block text-sm font-medium text-ink mb-1.5">Início das inscrições</label>
                     <input type="date" name="data_inicio" value="{{ old('data_inicio', $demanda->data_inicio?->format('Y-m-d')) }}"
                         class="w-full rounded-xl border border-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all">
                 </div>
@@ -80,6 +80,11 @@
                         class="w-full rounded-xl border border-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all">
                 </div>
             </div>
+            <x-mapa-localizacao
+                :lat="old('latitude', $demanda->latitude)"
+                :lng="old('longitude', $demanda->longitude)"
+                map-id="mapa-demanda-editar"
+            />
         </div>
 
         <div class="bg-surface rounded-2xl border border-border/60 p-6">

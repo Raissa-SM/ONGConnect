@@ -104,7 +104,10 @@ class DemandaController extends Controller
         $dados   = $request->validated();
         $demanda = Demanda::create(array_merge(
             collect($dados)->except('categorias')->all(),
-            ['ong_id' => $request->user()->ong->id]
+            [
+                'ong_id' => $request->user()->ong->id,
+                'status' => StatusDemanda::Rascunho,
+            ]
         ));
 
         if (!empty($dados['categorias'])) {

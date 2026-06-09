@@ -11,6 +11,17 @@ class RegistroRequest extends FormRequest
         return true;
     }
 
+    public function prepareForValidation(): void
+    {
+        $strip = fn(?string $v) => $v !== null ? preg_replace('/\D/', '', $v) : null;
+
+        $this->merge([
+            'cpf'      => $strip($this->cpf),
+            'cnpj'     => $strip($this->cnpj),
+            'telefone' => $strip($this->telefone),
+        ]);
+    }
+
     public function rules(): array
     {
         return [

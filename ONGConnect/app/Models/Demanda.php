@@ -18,8 +18,23 @@ class Demanda extends Model
     public function ong(): BelongsTo { return $this->belongsTo(ONG::class, 'ong_id'); }
     public function categorias(): BelongsToMany { return $this->belongsToMany(Categoria::class, 'categoria_demanda'); }
     public function inscricoes(): HasMany { return $this->hasMany(Inscricao::class); }
-    public function vagasDisponiveis(): int { return max(0, $this->vagas - $this->inscricoes()->where('status', 'aceita')->count()); }
-    public function estaAberta(): bool { return $this->status === StatusDemanda::Aberta; }
-    public function scopeAberta($query) { return $query->where('status', StatusDemanda::Aberta->value); }
+    public function vagasDisponiveis(): int {
+        if ($this->vagas === null) return PHP_INT_MAX;
+        return max(0, $this->vagas - $this->inscricoes()->where('status', 'aceita')->count());
+    }
+    public function estaAberta(): bool {
+        if ($this->status !== StatusDemanda::Aberta) return false;
+        if ($this->data_limite && $this->data_limite->lt(now()->startOfDay())) return false;
+        return true;
+    }
+
+    // Exclui demandas expiradas ou ainda não iniciadas, mesmo sem o scheduler ter rodado
+    public function scopeAberta($query) {
+        return $query->where('status', StatusDemanda::Aberta->value)
+                     ->where(fn ($q) => $q->whereNull('data_limite')
+                                          ->orWhere('data_limite', '>=', now()->toDateString()))
+                     ->where(fn ($q) => $q->whereNull('data_inicio')
+                                          ->orWhere('data_inicio', '<=', now()->toDateString()));
+    }
     public function scopeBusca($query, string $termo) { return $query->where(fn($q) => $q->where('titulo','like',"%{$termo}%")->orWhere('descricao','like',"%{$termo}%")); }
 }

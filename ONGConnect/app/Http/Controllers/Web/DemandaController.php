@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Enums\StatusDemanda;
+use App\Enums\StatusInscricao;
 use App\Http\Controllers\Controller;
 use App\Models\Categoria;
 use App\Models\Demanda;
@@ -14,7 +15,14 @@ class DemandaController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Demanda::with(['ong', 'categorias'])->aberta();
+        $mostrarEncerradas = $request->boolean('encerradas');
+
+        if ($mostrarEncerradas) {
+            $query = Demanda::with(['ong', 'categorias'])
+                ->whereIn('status', [StatusDemanda::Aberta->value, StatusDemanda::Encerrada->value]);
+        } else {
+            $query = Demanda::with(['ong', 'categorias'])->aberta();
+        }
 
         if ($request->filled('q')) {
             $q = $request->q;
@@ -34,7 +42,7 @@ class DemandaController extends Controller
         $demandas   = $query->orderByDesc('created_at')->paginate(12)->withQueryString();
         $categorias = Categoria::orderBy('nome')->get();
 
-        return view('demandas.index', compact('demandas', 'categorias'));
+        return view('demandas.index', compact('demandas', 'categorias', 'mostrarEncerradas'));
     }
 
     public function show(int $id): View
@@ -81,6 +89,8 @@ class DemandaController extends Controller
             'cidade'       => 'nullable|string|max:100',
             'uf'           => 'nullable|string|max:2',
             'endereco'     => 'nullable|string|max:255',
+            'latitude'     => 'nullable|numeric|between:-90,90',
+            'longitude'    => 'nullable|numeric|between:-180,180',
             'categorias'   => 'nullable|array',
             'categorias.*' => 'exists:categorias,id',
         ]);
@@ -122,6 +132,8 @@ class DemandaController extends Controller
             'cidade'       => 'nullable|string|max:100',
             'uf'           => 'nullable|string|max:2',
             'endereco'     => 'nullable|string|max:255',
+            'latitude'     => 'nullable|numeric|between:-90,90',
+            'longitude'    => 'nullable|numeric|between:-180,180',
             'categorias'   => 'nullable|array',
             'categorias.*' => 'exists:categorias,id',
         ]);
@@ -161,17 +173,21 @@ class DemandaController extends Controller
         return back()->with('success', 'Demanda publicada com sucesso!');
     }
 
-    public function encerrar(int $id, Request $request): RedirectResponse
+    public function concluirTodas(int $id, Request $request): RedirectResponse
     {
         $demanda = Demanda::findOrFail($id);
         abort_if($demanda->ong_id !== $request->user()->ong->id, 403);
 
         if ($demanda->status !== StatusDemanda::Aberta) {
-            return back()->with('error', 'Apenas demandas abertas podem ser encerradas.');
+            return back()->with('error', 'Apenas demandas abertas podem ser concluídas.');
         }
+
+        $concluidas = $demanda->inscricoes()
+            ->where('status', StatusInscricao::Aceita)
+            ->update(['status' => StatusInscricao::Concluida, 'concluida_em' => now()]);
 
         $demanda->update(['status' => StatusDemanda::Encerrada]);
 
-        return back()->with('success', 'Demanda encerrada.');
+        return back()->with('success', "Demanda concluída! {$concluidas} inscrição(ões) marcada(s) como concluída(s).");
     }
 }
