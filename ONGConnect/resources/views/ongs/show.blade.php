@@ -30,11 +30,11 @@
                 @endif
 
                 @if($ong->telefone)
-                    <p class="text-sm text-ink-2 mt-3">{{ $ong->telefone }}</p>
+                    <p class="text-sm text-ink-2 mt-3">{{ $ong->telefone_formatado }}</p>
                 @endif
 
                 @if($ong->cnpj)
-                    <p class="text-xs text-ink-2 mt-2">CNPJ: {{ $ong->cnpj }}</p>
+                    <p class="text-xs text-ink-2 mt-2">CNPJ: {{ $ong->cnpj_formatado }}</p>
                 @endif
             </div>
         </div>

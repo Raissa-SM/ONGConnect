@@ -32,13 +32,13 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-ink mb-1.5">CNPJ</label>
-                    <input type="text" name="cnpj" value="{{ old('cnpj', $ong->cnpj) }}"
+                    <input type="text" name="cnpj" value="{{ old('cnpj', $ong->cnpj_formatado) }}"
                         class="w-full rounded-xl border border-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                         placeholder="00.000.000/0001-00">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-ink mb-1.5">Telefone</label>
-                    <input type="text" name="telefone" value="{{ old('telefone', $ong->telefone) }}"
+                    <input type="text" name="telefone" value="{{ old('telefone', $ong->telefone_formatado) }}"
                         class="w-full rounded-xl border border-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                         placeholder="(47) 99999-9999">
                 </div>

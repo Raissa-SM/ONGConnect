@@ -25,6 +25,7 @@ class Demanda extends Model
     public function estaAberta(): bool {
         if ($this->status !== StatusDemanda::Aberta) return false;
         if ($this->data_limite && $this->data_limite->lt(now()->startOfDay())) return false;
+        if ($this->data_inicio && $this->data_inicio->gt(now()->startOfDay())) return false;
         return true;
     }
 

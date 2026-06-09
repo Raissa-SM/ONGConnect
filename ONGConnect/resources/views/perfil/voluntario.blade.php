@@ -26,13 +26,13 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-ink mb-1.5">CPF</label>
-                    <input type="text" name="cpf" value="{{ old('cpf', $voluntario->cpf) }}"
+                    <input type="text" name="cpf" value="{{ old('cpf', $voluntario->cpf_formatado) }}"
                         class="w-full rounded-xl border border-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                         placeholder="000.000.000-00">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-ink mb-1.5">Telefone</label>
-                    <input type="text" name="telefone" value="{{ old('telefone', $voluntario->telefone) }}"
+                    <input type="text" name="telefone" value="{{ old('telefone', $voluntario->telefone_formatado) }}"
                         class="w-full rounded-xl border border-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                         placeholder="(47) 99999-9999">
                 </div>

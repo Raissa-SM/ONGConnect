@@ -1,0 +1,23 @@
+@extends('layouts.app')
+@section('title', 'Acesso negado — ONGConnect')
+@section('content')
+
+<div class="min-h-[60vh] flex items-center justify-center px-6">
+    <div class="text-center max-w-md">
+        <p class="text-8xl font-bold text-primary/20 tracking-tighter mb-6">403</p>
+        <h1 class="text-2xl font-bold tracking-tight text-ink mb-3">Acesso negado</h1>
+        <p class="text-ink-2 mb-8">Você não tem permissão para acessar este recurso.</p>
+        <div class="flex gap-3 justify-center">
+            <a href="{{ route('home') }}"
+               class="bg-primary hover:bg-primary-dark text-white px-6 py-2.5 rounded-full font-medium text-sm transition-colors">
+                Ir para a página inicial
+            </a>
+            <button onclick="history.back()"
+                class="border border-border hover:border-ink-2 text-ink px-6 py-2.5 rounded-full font-medium text-sm transition-colors">
+                Voltar
+            </button>
+        </div>
+    </div>
+</div>
+
+@endsection
