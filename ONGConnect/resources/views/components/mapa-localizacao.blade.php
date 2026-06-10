@@ -15,19 +15,19 @@
         <input
             type="text"
             id="{{ $mapId }}-search"
-            placeholder="Buscar endereço ou cidade..."
-            class="flex-1 rounded-xl border border-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all bg-white"
+            placeholder="Digite o endereço ou a cidade..."
+            class="flex-1 rounded-xl border border-border px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all bg-white"
         >
         <button
             type="button"
             id="{{ $mapId }}-btn"
-            class="bg-primary hover:bg-primary-dark text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors whitespace-nowrap">
+            class="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-xl text-base font-semibold transition-colors whitespace-nowrap">
             Buscar
         </button>
     </div>
 
     {{-- Status da busca --}}
-    <p id="{{ $mapId }}-status" class="text-xs text-ink-2 min-h-[1rem]"></p>
+    <p id="{{ $mapId }}-status" class="text-sm text-ink-2 min-h-[1.25rem]"></p>
 
     {{-- isolation:isolate cria novo stacking context — evita que os z-indexes internos do Leaflet vazem sobre a navbar sticky --}}
     <div style="position: relative; isolation: isolate;">
@@ -38,16 +38,16 @@
         ></div>
     </div>
 
-    <p class="text-xs text-ink-2">
-        Clique no mapa ou arraste o marcador para ajustar a posição exata.
+    <p class="text-sm text-ink-2">
+        Dica: clique no mapa ou arraste o marcador para ajustar o lugar exato.
     </p>
 
-    {{-- Coordenadas exibidas --}}
-    <div id="{{ $mapId }}-coords" class="text-xs text-ink-2 font-mono">
+    {{-- Confirmação amigável --}}
+    <div id="{{ $mapId }}-coords" class="text-sm font-medium {{ ($lat && $lng) ? 'text-green-700' : 'text-ink-2' }}">
         @if($lat && $lng)
-            Localização atual: {{ number_format($lat, 5) }}, {{ number_format($lng, 5) }}
+            ✓ Local marcado no mapa
         @else
-            Nenhuma localização definida — busque um endereço ou clique no mapa.
+            Nenhum local marcado ainda — busque um endereço ou clique no mapa.
         @endif
     </div>
 
@@ -126,12 +126,13 @@
         if (moverView) leafMap.setView([lat, lng], 16);
     }
 
-    /* ── salva nos inputs ocultos e exibe ────────────────── */
+    /* ── salva nos inputs ocultos e exibe confirmação ────── */
     function salvarCoords(lat, lng) {
         document.getElementById(ID + '-lat').value = lat.toFixed(6);
         document.getElementById(ID + '-lng').value = lng.toFixed(6);
-        document.getElementById(ID + '-coords').textContent =
-            'Localização: ' + lat.toFixed(5) + ', ' + lng.toFixed(5);
+        const el = document.getElementById(ID + '-coords');
+        el.textContent = '✓ Local marcado no mapa';
+        el.className = 'text-sm font-medium text-green-700';
     }
 
     /* ── geocode (endereço → coords) ─────────────────────── */
@@ -139,7 +140,7 @@
         const q = document.getElementById(ID + '-search').value.trim();
         if (!q) return;
 
-        setStatus('Buscando…');
+        setStatus('Procurando endereço…');
 
         fetch('https://nominatim.openstreetmap.org/search?' + new URLSearchParams({
             format: 'json',
@@ -150,7 +151,7 @@
         }), { headers: { 'Accept-Language': 'pt-BR,pt;q=0.9' } })
         .then(r => r.json())
         .then(data => {
-            if (!data.length) { setStatus('Endereço não encontrado. Tente algo mais específico.'); return; }
+            if (!data.length) { setStatus('Endereço não encontrado. Tente escrever de outro jeito.'); return; }
 
             const r   = data[0];
             const lat = parseFloat(r.lat);
@@ -160,7 +161,7 @@
             colocarPin(lat, lng, true);
             preencherCidadeUF(r.address ?? {});
         })
-        .catch(() => setStatus('Erro de conexão ao buscar endereço.'));
+        .catch(() => setStatus('Não foi possível buscar agora. Verifique sua internet.'));
     }
 
     /* ── reverse geocode (coords → endereço) ─────────────── */

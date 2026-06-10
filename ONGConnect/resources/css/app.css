@@ -13,9 +13,37 @@
     --color-page:         #F5F5F7;
     --color-surface:      #FFFFFF;
     --color-ink:          #1D1D1F;
-    --color-ink-2:        #86868B;
+    /* Secundário escurecido para passar no contraste AA (era #86868B, ~3.5:1) */
+    --color-ink-2:        #515158;
     --color-border:       #D2D2D7;
-    --color-success:      #34C759;
-    --color-danger:       #FF3B30;
-    --color-warning:      #FF9500;
+    --color-success:      #248A3D;
+    --color-danger:       #D70015;
+    --color-warning:      #B25000;
+}
+
+@layer base {
+    html {
+        /* base de 16px e melhor legibilidade de leitura corrida */
+        font-size: 16px;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        line-height: 1.6;
+    }
+
+    /* Foco visível e consistente para navegação por teclado (acessibilidade) */
+    :focus-visible {
+        outline: 3px solid color-mix(in srgb, var(--color-primary) 55%, transparent);
+        outline-offset: 2px;
+        border-radius: 6px;
+    }
+
+    /* Respeita quem prefere menos animação */
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
 }
