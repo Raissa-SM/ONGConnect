@@ -71,10 +71,11 @@ class DemandaController extends Controller
         return view('demandas.minhas', compact('demandas'));
     }
 
-    public function criar(): View
+    public function criar(Request $request): View
     {
         $categorias = Categoria::orderBy('nome')->get();
-        return view('demandas.criar', compact('categorias'));
+        $ong = $request->user()->ong;
+        return view('demandas.criar', compact('categorias', 'ong'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -85,14 +86,20 @@ class DemandaController extends Controller
             'tipo'         => 'required|in:presencial,doacao,habilidade',
             'data_inicio'  => 'nullable|date',
             'data_limite'  => 'nullable|date|after_or_equal:data_inicio',
+            'evento_inicio' => 'nullable|date',
+            'evento_fim'    => 'nullable|date|after_or_equal:evento_inicio',
             'vagas'        => 'nullable|integer|min:1|max:9999',
             'cidade'       => 'nullable|string|max:100',
             'uf'           => 'nullable|string|max:2',
-            'endereco'     => 'nullable|string|max:255',
+            'endereco'     => 'required|string|max:255',
             'latitude'     => 'nullable|numeric|between:-90,90',
             'longitude'    => 'nullable|numeric|between:-180,180',
-            'categorias'   => 'nullable|array',
+            'categorias'   => 'required|array|min:1',
             'categorias.*' => 'exists:categorias,id',
+        ], [
+            'endereco.required'   => 'Informe o endereço da vaga (use o campo de busca do mapa).',
+            'categorias.required' => 'Selecione ao menos um assunto.',
+            'categorias.min'      => 'Selecione ao menos um assunto.',
         ]);
 
         $demanda = Demanda::create(array_merge($validated, [
@@ -128,14 +135,20 @@ class DemandaController extends Controller
             'tipo'         => 'required|in:presencial,doacao,habilidade',
             'data_inicio'  => 'nullable|date',
             'data_limite'  => 'nullable|date|after_or_equal:data_inicio',
+            'evento_inicio' => 'nullable|date',
+            'evento_fim'    => 'nullable|date|after_or_equal:evento_inicio',
             'vagas'        => 'nullable|integer|min:1|max:9999',
             'cidade'       => 'nullable|string|max:100',
             'uf'           => 'nullable|string|max:2',
-            'endereco'     => 'nullable|string|max:255',
+            'endereco'     => 'required|string|max:255',
             'latitude'     => 'nullable|numeric|between:-90,90',
             'longitude'    => 'nullable|numeric|between:-180,180',
-            'categorias'   => 'nullable|array',
+            'categorias'   => 'required|array|min:1',
             'categorias.*' => 'exists:categorias,id',
+        ], [
+            'endereco.required'   => 'Informe o endereço da vaga (use o campo de busca do mapa).',
+            'categorias.required' => 'Selecione ao menos um assunto.',
+            'categorias.min'      => 'Selecione ao menos um assunto.',
         ]);
 
         $demanda->update($validated);

@@ -14,7 +14,16 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/ongs)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/dashboard)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/match)",
-      "Bash(curl -s http://localhost:8000)"
+      "Bash(curl -s http://localhost:8000)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://127.0.0.1:8000/docs/api-docs.json\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://127.0.0.1:8000/api/documentation\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://127.0.0.1:8000/api/api-docs.json\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://127.0.0.1:8000/docs\")",
+      "Bash(bash tests/smoke.sh http://127.0.0.1:8000)",
+      "Bash(curl -s -X POST http://127.0.0.1:8000/api/auth/login -H 'Content-Type: application/json' -d '{\"email\":\"joao.pereira@email.com\",\"password\":\"senha1234\"}')",
+      "Bash(curl -s -X POST \"http://127.0.0.1:8000/api/demandas/2/inscricoes\" -H \"Content-Type: application/json\" -H \"Authorization: Bearer $\\(curl -s -X POST http://127.0.0.1:8000/api/auth/login -H 'Content-Type: application/json' -d '{\"email\":\"joao.pereira@email.com\",\"password\":\"senha1234\"}')",
+      "Bash(curl *)",
+      "Bash(php -l resources/views/components/mapa-localizacao.blade.php)"
     ]
   }
 }

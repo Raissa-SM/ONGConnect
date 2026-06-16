@@ -15,6 +15,24 @@ class ONG extends Model
     public function demandas(): HasMany { return $this->hasMany(Demanda::class, 'ong_id'); }
     public function possuiLocalizacao(): bool { return $this->latitude !== null && $this->longitude !== null; }
 
+    // Avaliações que esta ONG recebeu dos voluntários, com voluntário/demanda carregados.
+    public function avaliacoesRecebidas() {
+        return Avaliacao::where('autor_tipo', 'voluntario')
+            ->whereHas('inscricao.demanda', fn ($q) => $q->where('ong_id', $this->id))
+            ->with(['inscricao.voluntario.user', 'inscricao.demanda'])
+            ->latest()
+            ->get();
+    }
+    public function mediaAvaliacoes(): ?float {
+        $avaliacoes = $this->avaliacoesRecebidas();
+        return $avaliacoes->count() >= 3 ? round($avaliacoes->avg('nota'), 2) : null;
+    }
+    // Voluntários que concluíram trabalhos com esta ONG.
+    public function totalConcluidas(): int {
+        return Inscricao::whereHas('demanda', fn ($q) => $q->where('ong_id', $this->id))
+            ->where('status', 'concluida')->count();
+    }
+
     public function getCnpjFormatadoAttribute(): ?string
     {
         if (!$this->cnpj) return null;

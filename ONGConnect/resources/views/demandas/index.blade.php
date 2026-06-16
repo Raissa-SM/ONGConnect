@@ -96,6 +96,15 @@
                     <h3 class="text-lg font-semibold text-ink mb-1 leading-snug group-hover:text-primary transition-colors">{{ $demanda->titulo }}</h3>
                     <p class="text-base text-ink-2 mb-3">{{ $demanda->ong->razao_social }}</p>
                     <p class="text-base text-ink-2 line-clamp-2 mb-4">{{ $demanda->descricao }}</p>
+                    @if($demanda->evento_inicio)
+                        <p class="text-sm font-semibold {{ $demanda->eventoEmAndamento() ? 'text-success' : 'text-ink' }} mb-2">
+                            @if($demanda->eventoEmAndamento())
+                                ● Acontecendo agora
+                            @else
+                                Evento · {{ $demanda->evento_inicio->format('d/m/Y \à\s H:i') }}
+                            @endif
+                        </p>
+                    @endif
                     <div class="flex items-center justify-between text-sm text-ink-2">
                         @if($demanda->cidade)
                             <span>{{ $demanda->cidade }}{{ $demanda->uf ? ', ' . $demanda->uf : '' }}</span>

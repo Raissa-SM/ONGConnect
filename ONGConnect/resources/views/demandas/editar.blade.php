@@ -59,39 +59,55 @@
                         placeholder="Sem limite">
                 </div>
             </div>
+            <p class="text-sm text-ink-2">Essas datas são da <strong>inscrição</strong>.</p>
+        </div>
+
+        <div class="bg-surface rounded-2xl border border-border/60 p-6 space-y-5">
+            <div>
+                <h2 class="text-lg font-semibold text-ink">Quando o evento acontece</h2>
+                <p class="text-sm text-ink-2 mt-1">Data e hora em que a atividade realmente ocorre. Diferente do prazo de inscrição.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-base font-medium text-ink mb-2">Começa em</label>
+                    <input type="datetime-local" name="evento_inicio" value="{{ old('evento_inicio', $demanda->evento_inicio?->format('Y-m-d\TH:i')) }}"
+                        class="w-full rounded-xl border border-border px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all @error('evento_inicio') border-danger @enderror">
+                    @error('evento_inicio')
+                        <p class="text-sm text-danger mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div>
+                    <label class="block text-base font-medium text-ink mb-2">Termina em</label>
+                    <input type="datetime-local" name="evento_fim" value="{{ old('evento_fim', $demanda->evento_fim?->format('Y-m-d\TH:i')) }}"
+                        class="w-full rounded-xl border border-border px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all @error('evento_fim') border-danger @enderror">
+                    @error('evento_fim')
+                        <p class="text-sm text-danger mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+            <p class="text-sm text-ink-2">Deixe em branco para vagas sem data marcada (ex.: ajuda contínua).</p>
         </div>
 
         <div class="bg-surface rounded-2xl border border-border/60 p-6 space-y-4">
             <div>
-                <h2 class="text-lg font-semibold text-ink">Localização</h2>
-                <p class="text-sm text-ink-2 mt-1">Busque o endereço ou clique no mapa. A cidade e o estado são preenchidos sozinhos.</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="md:col-span-2">
-                    <label class="block text-base font-medium text-ink mb-2">Endereço</label>
-                    <input type="text" name="endereco" value="{{ old('endereco', $demanda->endereco) }}"
-                        class="w-full rounded-xl border border-border px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all">
-                </div>
-                <div>
-                    <label class="block text-base font-medium text-ink mb-2">Estado (UF)</label>
-                    <input type="text" name="uf" value="{{ old('uf', $demanda->uf) }}" maxlength="2"
-                        class="w-full rounded-xl border border-border px-4 py-3 text-base uppercase focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all">
-                </div>
-                <div class="md:col-span-3">
-                    <label class="block text-base font-medium text-ink mb-2">Cidade</label>
-                    <input type="text" name="cidade" value="{{ old('cidade', $demanda->cidade) }}"
-                        class="w-full rounded-xl border border-border px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all">
-                </div>
+                <h2 class="text-lg font-semibold text-ink">Localização <span class="text-danger">*</span></h2>
+                <p class="text-sm text-ink-2 mt-1">Busque o endereço ou clique no mapa. Cidade e estado são preenchidos sozinhos.</p>
             </div>
             <x-mapa-localizacao
                 :lat="old('latitude', $demanda->latitude)"
                 :lng="old('longitude', $demanda->longitude)"
+                :endereco="$demanda->endereco"
+                :cidade="$demanda->cidade"
+                :uf="$demanda->uf"
+                :interno="true"
+                :required="true"
                 map-id="mapa-demanda-editar"
             />
         </div>
 
         <div class="bg-surface rounded-2xl border border-border/60 p-6">
-            <h2 class="text-lg font-semibold text-ink mb-4">Assuntos</h2>
+            <h2 class="text-lg font-semibold text-ink mb-4">Assuntos <span class="text-danger">*</span></h2>
+            @error('categorias')<p class="text-sm text-danger mb-3">{{ $message }}</p>@enderror
             <div class="grid grid-cols-2 md:grid-cols-3 gap-2.5">
                 @php $selectedCats = old('categorias', $demanda->categorias->pluck('id')->toArray()); @endphp
                 @foreach($categorias as $cat)

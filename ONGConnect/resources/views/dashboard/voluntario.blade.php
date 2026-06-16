@@ -62,14 +62,20 @@
             @else
                 <div class="space-y-3">
                     @foreach($proximas as $i)
+                        @php $emAndamento = $i->demanda->eventoEmAndamento(); @endphp
                         <div class="flex items-start gap-4 py-3 border-b border-border/40 last:border-0">
-                            <div class="text-center bg-primary/10 text-primary rounded-xl px-3 py-2 shrink-0">
-                                <p class="text-sm font-medium">{{ $i->demanda->data_inicio->format('M') }}</p>
-                                <p class="text-xl font-bold leading-none">{{ $i->demanda->data_inicio->format('d') }}</p>
+                            <div class="text-center {{ $emAndamento ? 'bg-success/10 text-success' : 'bg-primary/10 text-primary' }} rounded-xl px-3 py-2 shrink-0">
+                                <p class="text-sm font-medium">{{ $i->demanda->evento_inicio->format('M') }}</p>
+                                <p class="text-xl font-bold leading-none">{{ $i->demanda->evento_inicio->format('d') }}</p>
                             </div>
                             <div class="min-w-0">
                                 <p class="font-semibold text-ink text-base truncate">{{ $i->demanda->titulo }}</p>
-                                <p class="text-sm text-ink-2 mt-0.5">{{ $i->demanda->ong->razao_social }}</p>
+                                <a href="{{ route('ongs.show', $i->demanda->ong->id) }}" class="text-sm text-ink-2 hover:text-primary transition-colors mt-0.5 inline-block">{{ $i->demanda->ong->razao_social }}</a>
+                                @if($emAndamento)
+                                    <p class="text-sm font-semibold text-success mt-0.5">● Acontecendo agora</p>
+                                @else
+                                    <p class="text-sm text-ink-2 mt-0.5">{{ $i->demanda->evento_inicio->format('d/m/Y \à\s H:i') }}</p>
+                                @endif
                                 @if($i->demanda->cidade)
                                     <p class="text-sm text-ink-2">{{ $i->demanda->cidade }}</p>
                                 @endif
@@ -95,18 +101,9 @@
                         <div class="flex items-center justify-between py-2.5 border-b border-border/40 last:border-0 gap-4">
                             <div class="min-w-0">
                                 <p class="font-semibold text-ink text-base truncate">{{ $i->demanda->titulo }}</p>
-                                <p class="text-sm text-ink-2 mt-0.5">{{ $i->demanda->ong->razao_social }}</p>
+                                <a href="{{ route('ongs.show', $i->demanda->ong->id) }}" class="text-sm text-ink-2 hover:text-primary transition-colors mt-0.5 inline-block">{{ $i->demanda->ong->razao_social }}</a>
                             </div>
-                            @php
-                                $badgeClass = match($i->status->value) {
-                                    'aceita'    => 'bg-green-50 text-green-700',
-                                    'concluida' => 'bg-blue-50 text-blue-700',
-                                    'pendente'  => 'bg-amber-50 text-amber-800',
-                                    'recusada'  => 'bg-red-50 text-danger',
-                                    default     => 'bg-page text-ink-2',
-                                };
-                            @endphp
-                            <span class="text-sm font-semibold px-3 py-1 rounded-full shrink-0 {{ $badgeClass }}">
+                            <span class="text-sm font-semibold px-3 py-1 rounded-full shrink-0 {{ $i->status->badgeClasses() }}">
                                 {{ $i->status->label() }}
                             </span>
                         </div>

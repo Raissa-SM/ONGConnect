@@ -28,13 +28,13 @@ class DashboardController extends Controller
                 $s->value => $inscricoes->filter(fn ($i) => $i->status === $s)->count(),
             ]);
 
+        // Eventos confirmados que ainda vão acontecer ou estão ocorrendo agora.
         $proximas = $inscricoes
             ->filter(fn ($i) =>
                 $i->status === StatusInscricao::Aceita
-                && $i->demanda->data_inicio
-                && $i->demanda->data_inicio->isFuture()
+                && $i->demanda->eventoAtivo()
             )
-            ->sortBy(fn ($i) => $i->demanda->data_inicio)
+            ->sortBy(fn ($i) => $i->demanda->evento_inicio)
             ->take(3)
             ->values();
 

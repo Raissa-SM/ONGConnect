@@ -28,15 +28,7 @@
         <div class="bg-surface rounded-2xl border border-border/60 overflow-hidden">
             <div class="divide-y divide-border/40">
                 @foreach($inscricoes as $inscricao)
-                    @php
-                        $badgeClass = match($inscricao->status->value) {
-                            'aceita'    => 'bg-green-50 text-green-700',
-                            'concluida' => 'bg-blue-50 text-blue-700',
-                            'pendente'  => 'bg-amber-50 text-amber-800',
-                            'recusada'  => 'bg-red-50 text-danger',
-                            default     => 'bg-page text-ink-2',
-                        };
-                    @endphp
+                    @php $badgeClass = $inscricao->status->badgeClasses(); @endphp
                     <div class="p-5 flex items-center justify-between gap-6 flex-wrap">
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-3 flex-wrap">
@@ -48,7 +40,7 @@
                                     {{ $inscricao->status->label() }}
                                 </span>
                             </div>
-                            <p class="text-base text-ink-2 mt-1">{{ $inscricao->demanda->ong->razao_social }}</p>
+                            <a href="{{ route('ongs.show', $inscricao->demanda->ong->id) }}" class="text-base text-ink-2 hover:text-primary transition-colors mt-1 inline-block">{{ $inscricao->demanda->ong->razao_social }}</a>
                             <div class="flex items-center gap-4 mt-2 text-sm text-ink-2 flex-wrap">
                                 <span>Inscrito em {{ $inscricao->created_at->format('d/m/Y') }}</span>
                                 @if($inscricao->respondida_em)

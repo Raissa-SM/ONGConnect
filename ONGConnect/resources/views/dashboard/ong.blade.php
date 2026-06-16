@@ -63,7 +63,7 @@
                         <div class="py-3 border-b border-border/40 last:border-0">
                             <div class="flex items-start justify-between gap-3">
                                 <div class="min-w-0">
-                                    <p class="font-semibold text-ink text-base">{{ $i->voluntario->user?->name }}</p>
+                                    <a href="{{ route('voluntarios.show', $i->voluntario->id) }}" class="font-semibold text-primary hover:text-primary-dark transition-colors text-base inline-block">{{ $i->voluntario->user?->name }}</a>
                                     <p class="text-sm text-ink-2 mt-0.5 truncate">{{ $i->demanda->titulo }}</p>
                                     @if($i->mensagem)
                                         <p class="text-sm text-ink-2 mt-1 line-clamp-1 italic">"{{ $i->mensagem }}"</p>
@@ -105,7 +105,7 @@
                         <div class="flex items-center justify-between py-2.5 border-b border-border/40 last:border-0 gap-4">
                             <div class="min-w-0">
                                 <p class="font-semibold text-ink text-base truncate">{{ $d->titulo }}</p>
-                                <p class="text-sm text-ink-2 mt-0.5">{{ $d->vagasDisponiveis() }} vaga(s) livre(s)</p>
+                                <p class="text-sm text-ink-2 mt-0.5">{{ $d->vagas ? $d->vagasDisponiveis() . ' vaga(s) livre(s)' : 'Vagas ilimitadas' }}</p>
                             </div>
                             <a href="{{ route('inscricoes.demanda', $d->id) }}"
                                class="text-sm text-primary hover:text-primary-dark font-semibold transition-colors shrink-0">

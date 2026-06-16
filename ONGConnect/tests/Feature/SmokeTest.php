@@ -65,6 +65,7 @@ class SmokeTest extends TestCase
     {
         $demanda = Demanda::firstOrFail();
         $ong     = ONG::firstOrFail();
+        $vol     = Voluntario::whereHas('user')->firstOrFail();
 
         $this->get('/')->assertOk();
         $this->get(route('demandas.index'))->assertOk();
@@ -73,6 +74,7 @@ class SmokeTest extends TestCase
         $this->get(route('demandas.show', $demanda->id))->assertOk();
         $this->get(route('ongs.index'))->assertOk();
         $this->get(route('ongs.show', $ong->id))->assertOk();
+        $this->get(route('voluntarios.show', $vol->id))->assertOk();
         $this->get(route('login'))->assertOk();
         $this->get(route('registro'))->assertOk();
     }

@@ -67,29 +67,13 @@
                 <h2 class="text-lg font-semibold text-ink">Endereço e localização</h2>
                 <p class="text-sm text-ink-2 mt-1">Busque o endereço ou clique no mapa. A cidade e o estado são preenchidos sozinhos.</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="md:col-span-2">
-                    <label class="block text-base font-medium text-ink mb-2">Endereço</label>
-                    <input type="text" name="endereco" value="{{ old('endereco', $ong->endereco) }}"
-                        class="w-full rounded-xl border border-border px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
-                        placeholder="Rua, número, bairro">
-                </div>
-                <div>
-                    <label class="block text-base font-medium text-ink mb-2">Cidade</label>
-                    <input type="text" name="cidade" value="{{ old('cidade', $ong->cidade) }}"
-                        class="w-full rounded-xl border border-border px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
-                        placeholder="Rio do Sul">
-                </div>
-                <div>
-                    <label class="block text-base font-medium text-ink mb-2">Estado (UF)</label>
-                    <input type="text" name="uf" value="{{ old('uf', $ong->uf) }}" maxlength="2"
-                        class="w-full rounded-xl border border-border px-4 py-3 text-base uppercase focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
-                        placeholder="SC">
-                </div>
-            </div>
             <x-mapa-localizacao
                 :lat="old('latitude', $ong->latitude)"
                 :lng="old('longitude', $ong->longitude)"
+                :endereco="$ong->endereco"
+                :cidade="$ong->cidade"
+                :uf="$ong->uf"
+                :interno="true"
                 map-id="mapa-ong"
             />
         </div>

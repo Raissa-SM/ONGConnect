@@ -36,6 +36,32 @@
                 @if($ong->cnpj)
                     <p class="text-sm text-ink-2 mt-2">CNPJ: {{ $ong->cnpj_formatado }}</p>
                 @endif
+
+                {{-- Avaliação --}}
+                <div class="mt-5 pt-5 border-t border-border/50">
+                    @if($media !== null)
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl font-bold text-ink">{{ number_format($media, 1) }}</span>
+                            <x-estrelas :nota="$media" tamanho="text-lg" />
+                        </div>
+                        <p class="text-sm text-ink-2 mt-1">Média de {{ $avaliacoes->count() }} avaliações de voluntários</p>
+                    @else
+                        <p class="text-base font-semibold text-ink">Ainda sem nota</p>
+                        <p class="text-sm text-ink-2 mt-1">A nota aparece após 3 avaliações ({{ $avaliacoes->count() }} até agora).</p>
+                    @endif
+                </div>
+
+                {{-- Indicadores --}}
+                <div class="mt-5 pt-5 border-t border-border/50 grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-2xl font-bold text-ink">{{ $demandasAbertas->count() }}</p>
+                        <p class="text-sm text-ink-2">Vagas abertas</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-ink">{{ $totalConcluidas }}</p>
+                        <p class="text-sm text-ink-2">Trabalhos concluídos</p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -67,6 +93,15 @@
                                         </div>
                                         <h3 class="text-lg font-semibold text-ink group-hover:text-primary transition-colors">{{ $demanda->titulo }}</h3>
                                         <p class="text-base text-ink-2 mt-1 line-clamp-2">{{ $demanda->descricao }}</p>
+                                        @if($demanda->evento_inicio)
+                                            <p class="text-sm font-semibold {{ $demanda->eventoEmAndamento() ? 'text-success' : 'text-ink' }} mt-2">
+                                                @if($demanda->eventoEmAndamento())
+                                                    ● Acontecendo agora
+                                                @else
+                                                    Evento · {{ $demanda->evento_inicio->format('d/m/Y \à\s H:i') }}
+                                                @endif
+                                            </p>
+                                        @endif
                                         @if($demanda->categorias->count())
                                             <div class="flex flex-wrap gap-1.5 mt-3">
                                                 @foreach($demanda->categorias->take(4) as $cat)
@@ -127,6 +162,40 @@
                     </div>
                 </div>
             @endif
+
+            {{-- Avaliações recebidas dos voluntários --}}
+            <div>
+                <h2 class="text-xl font-bold tracking-tight text-ink mb-5">O que os voluntários dizem ({{ $avaliacoes->count() }})</h2>
+                @if($avaliacoes->isEmpty())
+                    <div class="bg-surface rounded-2xl border border-border/60 p-10 text-center text-ink-2">
+                        <p class="text-base">Esta ONG ainda não recebeu avaliações.</p>
+                    </div>
+                @else
+                    <div class="bg-surface rounded-2xl border border-border/60 p-6 space-y-5">
+                        @foreach($avaliacoes as $av)
+                            <div class="pb-5 border-b border-border/40 last:border-0 last:pb-0">
+                                <div class="flex items-center justify-between gap-3 flex-wrap">
+                                    <x-estrelas :nota="$av->nota" />
+                                    <span class="text-sm text-ink-2">{{ $av->created_at->format('d/m/Y') }}</span>
+                                </div>
+                                @if($av->comentario)
+                                    <p class="text-base text-ink mt-2 leading-relaxed">"{{ $av->comentario }}"</p>
+                                @endif
+                                <p class="text-sm text-ink-2 mt-2">
+                                    @if($av->inscricao?->voluntario)
+                                        <a href="{{ route('voluntarios.show', $av->inscricao->voluntario->id) }}"
+                                           class="font-semibold text-primary hover:text-primary-dark transition-colors">{{ $av->inscricao->voluntario->user?->name }}</a>
+                                    @endif
+                                    @if($av->inscricao?->demanda)
+                                        · <a href="{{ route('demandas.show', $av->inscricao->demanda->id) }}"
+                                             class="text-ink-2 hover:text-primary transition-colors">{{ $av->inscricao->demanda->titulo }}</a>
+                                    @endif
+                                </p>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
 
         </div>
     </div>

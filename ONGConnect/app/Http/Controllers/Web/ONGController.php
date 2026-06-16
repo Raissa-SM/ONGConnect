@@ -30,6 +30,12 @@ class ONGController extends Controller
             ->latest()
             ->get();
 
-        return view('ongs.show', compact('ong', 'demandasAbertas', 'demandasEncerradas'));
+        $avaliacoes = $ong->avaliacoesRecebidas();
+        $media = $avaliacoes->count() >= 3 ? round($avaliacoes->avg('nota'), 1) : null;
+        $totalConcluidas = $ong->totalConcluidas();
+
+        return view('ongs.show', compact(
+            'ong', 'demandasAbertas', 'demandasEncerradas', 'avaliacoes', 'media', 'totalConcluidas'
+        ));
     }
 }

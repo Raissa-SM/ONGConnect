@@ -21,6 +21,8 @@ class StoreDemandaRequest extends FormRequest
             'tipo'           => ['required', Rule::in(array_column(TipoDemanda::cases(), 'value'))],
             'data_inicio'    => ['nullable', 'date'],
             'data_limite'    => ['nullable', 'date', 'after_or_equal:data_inicio'],
+            'evento_inicio'  => ['nullable', 'date'],
+            'evento_fim'     => ['nullable', 'date', 'after_or_equal:evento_inicio'],
             'vagas'          => ['nullable', 'integer', 'min:1', 'max:9999'],
             'endereco'       => ['nullable', 'string', 'max:255'],
             'cidade'         => ['nullable', 'string', 'max:100'],
@@ -40,6 +42,7 @@ class StoreDemandaRequest extends FormRequest
             'tipo.required'              => 'O tipo da demanda é obrigatório.',
             'tipo.in'                    => 'Tipo inválido. Use: presencial, doacao ou habilidade.',
             'data_limite.after_or_equal' => 'A data limite deve ser igual ou posterior à data de início.',
+            'evento_fim.after_or_equal'  => 'O fim do evento deve ser igual ou posterior ao início do evento.',
             'vagas.min'                  => 'A demanda deve ter ao menos 1 vaga.',
             'categorias.*.exists'        => 'Uma ou mais categorias informadas não existem.',
         ];

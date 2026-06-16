@@ -9,6 +9,7 @@ use App\Http\Controllers\Web\InscricaoController;
 use App\Http\Controllers\Web\MatchController;
 use App\Http\Controllers\Web\ONGController;
 use App\Http\Controllers\Web\PerfilController;
+use App\Http\Controllers\Web\VoluntarioController;
 use Illuminate\Support\Facades\Route;
 
 // ── Públicas ───────────────────────────────────────────────────────────────
@@ -17,6 +18,7 @@ Route::get('/demandas',      [DemandaController::class, 'index'])->name('demanda
 Route::get('/demandas/{id}', [DemandaController::class, 'show'])->name('demandas.show');
 Route::get('/ongs',          [ONGController::class,    'index'])->name('ongs.index');
 Route::get('/ongs/{id}',     [ONGController::class,    'show'])->name('ongs.show');
+Route::get('/voluntarios/{id}', [VoluntarioController::class, 'show'])->name('voluntarios.show');
 
 // ── Auth ───────────────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {

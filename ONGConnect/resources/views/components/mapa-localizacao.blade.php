@@ -1,7 +1,12 @@
 @props([
     'lat'      => null,
     'lng'      => null,
+    'endereco' => null,
+    'cidade'   => null,
+    'uf'       => null,
     'mapId'    => 'mapa-loc',
+    'interno'  => false,   // true = o componente é dono do endereço (campo de busca = endereço)
+    'required' => false,
 ])
 
 @pushOnce('head')
@@ -10,13 +15,20 @@
 
 <div class="space-y-3">
 
-    {{-- Busca de endereço --}}
+    @if($interno)
+        <label for="{{ $mapId }}-search" class="block text-base font-medium text-ink">
+            Endereço @if($required)<span class="text-danger">*</span>@endif
+        </label>
+    @endif
+
+    {{-- Busca de endereço (no modo interno este é o próprio campo de endereço da demanda/ONG) --}}
     <div class="flex gap-2">
         <input
             type="text"
             id="{{ $mapId }}-search"
+            @if($interno) name="endereco" value="{{ old('endereco', $endereco) }}" @if($required) required @endif @endif
             placeholder="Digite o endereço ou a cidade..."
-            class="flex-1 rounded-xl border border-border px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all bg-white"
+            class="flex-1 rounded-xl border border-border px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all bg-white @error('endereco') border-danger @enderror"
         >
         <button
             type="button"
@@ -25,6 +37,12 @@
             Buscar
         </button>
     </div>
+    @if($interno)
+        @error('endereco')<p class="text-sm text-danger">{{ $message }}</p>@enderror
+        {{-- Cidade e UF são preenchidas sozinhas pela busca; ficam ocultas --}}
+        <input type="hidden" name="cidade" id="{{ $mapId }}-cidade" value="{{ old('cidade', $cidade) }}">
+        <input type="hidden" name="uf"     id="{{ $mapId }}-uf"     value="{{ old('uf', $uf) }}">
+    @endif
 
     {{-- Status da busca --}}
     <p id="{{ $mapId }}-status" class="text-sm text-ink-2 min-h-[1.25rem]"></p>
@@ -88,7 +106,10 @@
 
         if (initLat && initLng) {
             colocarPin(initLat, initLng, false);
-            reverseGeocode(initLat, initLng); // preenche campo de busca na carga inicial
+            // Só busca o endereço pelas coords se o campo ainda estiver vazio,
+            // para não sobrescrever um endereço já preenchido (ex.: o da ONG).
+            const sf = document.getElementById(ID + '-search');
+            if (!sf.value.trim()) reverseGeocode(initLat, initLng);
         }
 
         leafMap.on('click', e => {

@@ -33,7 +33,7 @@
                     @endif
                 </div>
                 <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-ink">{{ $demanda->titulo }}</h1>
-                <p class="text-ink-2 mt-2 text-lg">{{ $demanda->ong->razao_social }}</p>
+                <a href="{{ route('ongs.show', $demanda->ong->id) }}" class="text-primary hover:text-primary-dark transition-colors mt-2 text-lg inline-block font-medium">{{ $demanda->ong->razao_social }}</a>
 
                 <p class="text-ink leading-relaxed whitespace-pre-line mt-6 text-base">{{ $demanda->descricao }}</p>
             </div>
@@ -52,6 +52,17 @@
                         <div>
                             <dt class="text-ink-2 text-sm">Vagas disponíveis</dt>
                             <dd class="font-semibold text-ink mt-0.5">{{ $demanda->vagasDisponiveis() }} de {{ $demanda->vagas }}</dd>
+                        </div>
+                    @endif
+                    @if($demanda->evento_inicio)
+                        <div class="sm:col-span-2">
+                            <dt class="text-ink-2 text-sm">Quando acontece</dt>
+                            <dd class="font-semibold text-ink mt-0.5">
+                                {{ $demanda->evento_label }}
+                                @if($demanda->eventoEmAndamento())
+                                    <span class="ml-2 text-sm font-semibold text-success">● Acontecendo agora</span>
+                                @endif
+                            </dd>
                         </div>
                     @endif
                     @if($demanda->data_inicio)
@@ -111,13 +122,20 @@
         <div class="space-y-5">
 
             {{-- Inscrição --}}
-            <div class="bg-surface rounded-2xl border border-border/60 p-6 sticky top-20">
+            <div class="bg-surface rounded-2xl border border-border/60 p-6">
                 <h2 class="text-lg font-semibold text-ink mb-4">Quero participar</h2>
 
                 @auth
                     @if(auth()->user()->isVoluntario())
                         @if($jaInscrito)
-                            <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-4 text-base text-green-800">
+                            @php
+                                $caixaInscrito = match($inscricao?->status->value) {
+                                    'recusada', 'cancelada' => 'bg-red-50 border-red-200 text-danger',
+                                    'pendente'              => 'bg-amber-50 border-amber-200 text-amber-800',
+                                    default                 => 'bg-green-50 border-green-200 text-green-800',
+                                };
+                            @endphp
+                            <div class="{{ $caixaInscrito }} border rounded-xl p-4 mb-4 text-base">
                                 Você já se inscreveu nesta vaga.
                                 @if($inscricao)
                                     <br><span class="text-sm">Situação atual: <strong>{{ $inscricao->status->label() }}</strong></span>
@@ -169,7 +187,7 @@
             {{-- Sobre a ONG --}}
             <div class="bg-surface rounded-2xl border border-border/60 p-6">
                 <h2 class="text-lg font-semibold text-ink mb-3">Sobre a ONG</h2>
-                <p class="font-semibold text-ink text-base">{{ $demanda->ong->razao_social }}</p>
+                <a href="{{ route('ongs.show', $demanda->ong->id) }}" class="font-semibold text-primary hover:text-primary-dark transition-colors text-base inline-block">{{ $demanda->ong->razao_social }}</a>
                 @if($demanda->ong->cidade)
                     <p class="text-sm text-ink-2 mt-1">{{ $demanda->ong->cidade }}{{ $demanda->ong->uf ? ', ' . $demanda->ong->uf : '' }}</p>
                 @endif

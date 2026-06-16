@@ -19,9 +19,21 @@ class Voluntario extends Model
     public function inscricoes(): HasMany { return $this->hasMany(Inscricao::class); }
     public function possuiLocalizacao(): bool { return $this->latitude !== null && $this->longitude !== null; }
     public function aptoParaMatch(): bool { return $this->possuiLocalizacao() && $this->categorias()->exists(); }
+    // Avaliações que este voluntário recebeu das ONGs, já com a ONG/demanda carregadas.
+    public function avaliacoesRecebidas() {
+        return Avaliacao::where('autor_tipo', 'ong')
+            ->whereHas('inscricao', fn ($q) => $q->where('voluntario_id', $this->id))
+            ->with(['inscricao.demanda.ong'])
+            ->latest()
+            ->get();
+    }
     public function mediaAvaliacoes(): ?float {
-        $avaliacoes = Avaliacao::whereHas('inscricao.voluntario', fn($q) => $q->where('id', $this->id))->where('autor_tipo', 'ong')->get();
+        $avaliacoes = $this->avaliacoesRecebidas();
         return $avaliacoes->count() >= 3 ? round($avaliacoes->avg('nota'), 2) : null;
+    }
+    // Trabalhos concluídos (inscrições finalizadas) — bom indicador de experiência.
+    public function totalConcluidas(): int {
+        return $this->inscricoes()->where('status', 'concluida')->count();
     }
 
     public function getCpfFormatadoAttribute(): ?string

@@ -35,20 +35,12 @@
         <div class="bg-surface rounded-2xl border border-border/60 overflow-hidden">
             <div class="divide-y divide-border/40">
                 @foreach($inscricoes as $inscricao)
-                    @php
-                        $badgeClass = match($inscricao->status->value) {
-                            'aceita'    => 'bg-green-50 text-green-700',
-                            'concluida' => 'bg-blue-50 text-blue-700',
-                            'pendente'  => 'bg-amber-50 text-amber-800',
-                            'recusada'  => 'bg-red-50 text-danger',
-                            default     => 'bg-page text-ink-2',
-                        };
-                    @endphp
+                    @php $badgeClass = $inscricao->status->badgeClasses(); @endphp
                     <div class="p-5">
                         <div class="flex items-start justify-between gap-4 flex-wrap">
                             <div class="min-w-0 flex-1">
                                 <div class="flex items-center gap-2 flex-wrap">
-                                    <p class="text-lg font-semibold text-ink">{{ $inscricao->voluntario->user?->name }}</p>
+                                    <a href="{{ route('voluntarios.show', $inscricao->voluntario->id) }}" class="text-lg font-semibold text-primary hover:text-primary-dark transition-colors">{{ $inscricao->voluntario->user?->name }}</a>
                                     <span class="text-sm font-semibold px-3 py-1 rounded-full {{ $badgeClass }}">
                                         {{ $inscricao->status->label() }}
                                     </span>

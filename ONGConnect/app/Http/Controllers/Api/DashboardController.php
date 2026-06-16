@@ -49,25 +49,27 @@ class DashboardController extends Controller
                 $s->value => $inscricoes->filter(fn ($i) => $i->status === $s)->count(),
             ]);
 
-        // ── Próximas atividades (aceitas com data_inicio futura) ──────────────
+        // ── Próximas atividades (aceitas, evento futuro ou em andamento) ──────
         $proximas = $inscricoes
             ->filter(fn ($i) =>
                 $i->status === StatusInscricao::Aceita
-                && $i->demanda->data_inicio
-                && $i->demanda->data_inicio->isFuture()
+                && $i->demanda->eventoAtivo()
             )
-            ->sortBy(fn ($i) => $i->demanda->data_inicio)
+            ->sortBy(fn ($i) => $i->demanda->evento_inicio)
             ->take(5)
             ->values()
             ->map(fn ($i) => [
                 'inscricao_id' => $i->id,
                 'status'       => $i->status->value,
                 'demanda'      => [
-                    'id'          => $i->demanda->id,
-                    'titulo'      => $i->demanda->titulo,
-                    'ong'         => $i->demanda->ong->razao_social,
-                    'data_inicio' => $i->demanda->data_inicio->format('d/m/Y'),
-                    'cidade'      => $i->demanda->cidade,
+                    'id'                  => $i->demanda->id,
+                    'titulo'              => $i->demanda->titulo,
+                    'ong'                 => $i->demanda->ong->razao_social,
+                    'evento_inicio'       => $i->demanda->evento_inicio->format('d/m/Y H:i'),
+                    'evento_fim'          => $i->demanda->evento_fim?->format('d/m/Y H:i'),
+                    'evento_label'        => $i->demanda->evento_label,
+                    'evento_em_andamento' => $i->demanda->eventoEmAndamento(),
+                    'cidade'              => $i->demanda->cidade,
                 ],
             ]);
 
